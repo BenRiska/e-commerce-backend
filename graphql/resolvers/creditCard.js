@@ -1,5 +1,5 @@
 
-const {UserInputError, addResolveFunctionsToSchema} = require("apollo-server")
+const {UserInputError} = require("apollo-server")
 
 const CreditCard = require("../../models/CreditCard")
 const User = require("../../models/User")
