@@ -7,7 +7,7 @@ const productSchema = new Schema({
     price: Number,
     categories: [{
         type: Schema.Types.ObjectId,
-        ref: "productCategories"
+        ref: "productcategories"
     }]
 })
 

@@ -1,15 +1,18 @@
 const usersResolvers = require("./users")
 const creditCardResolvers = require("./creditCard")
+const contactResolvers = require("./contact")
+const productCategoryResolvers = require("./productCategory")
 
 module.exports = {
     Query: {
-        getUsers(){
-            return {username: "ben"}
-        },
-        ...creditCardResolvers.Query
+        ...creditCardResolvers.Query,
+        ...contactResolvers.Query,
+        ...productCategoryResolvers.Query
     },
     Mutation: {
         ...usersResolvers.Mutation,
-        ...creditCardResolvers.Mutation
+        ...creditCardResolvers.Mutation,
+        ...contactResolvers.Mutation,
+        ...productCategoryResolvers.Mutation
     }
 }

@@ -81,6 +81,48 @@ module.exports = {
             
              // return tournament
              return creditCard
+        },
+        async deleteCreditCard(_, {cardInput: {cardName, cardNumber, expiryDate, username}}, context){
+
+             // check user is authorized
+             const user = checkAuth(context);
+
+             // throw error if not authorized
+            if(!user){
+             throw new UserInputError("User not authorized")
+             }
+
+             // check if user is in the database
+            const cardOwner = await User.findOne({username})
+
+            if(!cardOwner){
+                throw new UserInputError(
+                    "User not recognised.")
+            }
+
+             // see if credit card already exists
+             const existingCreditCard = await CreditCard.findOne({cc_name: cardName, cc_number: cardNumber, expiryDate, user: cardOwner})
+
+             // check and throw error
+             if(!existingCreditCard){
+                 throw new UserInputError(
+                     "Credit card doesn't exist.")
+             }
+
+             // delete tournament
+            CreditCard.deleteOne({cc_name: cardName, cc_number: cardNumber, expiryDate, user: cardOwner}, (err) => {
+                if(err){
+                    throw new UserInputError(
+                        "Error contacting database.")
+                }
+            })
+
+            // get credit cards
+            const creditCards = await CreditCard.find({user: cardOwner})
+
+            // return credit Cards array
+            return creditCards
+
         }
     }
 }
