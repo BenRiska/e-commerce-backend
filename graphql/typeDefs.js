@@ -23,6 +23,17 @@ module.exports = gql`
         id: ID!
         name: String!
     }
+    type Product {
+        id: ID!
+        name: String!
+        description: String!
+        price: String!
+        categories: [Category!]!
+    }
+    type Event {
+        status: String!
+        deliveryDate: String!
+    }
     input CardInput {
         cardNumber: String!
         cardName: String!
@@ -39,6 +50,7 @@ module.exports = gql`
         fetchCreditCards(username: String!): [CreditCard!]!
         fetchContact(username: String!): Contact!
         fetchCategories: [Category!]!
+        fetchProducts: [Product!]!
     }
     type Mutation {
         register(registerInput: RegisterInput!): User!
@@ -49,5 +61,8 @@ module.exports = gql`
         deleteContact(username: String!): String!
         createCategory(category: String!): Category!
         deleteCategory(category: String!): String!
+        createProduct(name: String, description: String!, price: String!): Product!
+        deleteProduct(name: String, description: String!, price: String!): String!
+        createEvent: Event!
     }
 `

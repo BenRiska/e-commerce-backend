@@ -7,8 +7,6 @@ module.exports = {
              // get productCategory
              const productCategory = await ProductCategory.find()
 
-             console.log(productCategory)
-
              // return productCategory array
              return productCategory
         }

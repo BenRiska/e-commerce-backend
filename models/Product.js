@@ -4,7 +4,7 @@ const {model, Schema} = require("mongoose");
 const productSchema = new Schema({
     name: String,
     description: String,
-    price: Number,
+    price: String,
     categories: [{
         type: Schema.Types.ObjectId,
         ref: "productcategories"
