@@ -18,12 +18,8 @@ module.exports = {
             throw new UserInputError("User not authorized")
             }
 
-            console.log(user)
-
             // see if event already exists
             const existingEvent = await Event.findOne({user: user.id})
-
-            console.log(existingEvent)
 
             // check and throw error
             if(existingEvent){

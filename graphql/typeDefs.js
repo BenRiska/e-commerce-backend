@@ -28,6 +28,8 @@ module.exports = gql`
         name: String!
         description: String!
         price: String!
+        sizes: [String!]!
+        images: [String!]!
         categories: [Category!]!
     }
     type Event {
@@ -51,6 +53,7 @@ module.exports = gql`
         fetchContact(username: String!): Contact!
         fetchCategories: [Category!]!
         fetchProducts: [Product!]!
+        fetchProduct(id: String!): Product!
     }
     type Mutation {
         register(registerInput: RegisterInput!): User!
@@ -61,7 +64,7 @@ module.exports = gql`
         deleteContact(username: String!): String!
         createCategory(category: String!): Category!
         deleteCategory(category: String!): String!
-        createProduct(name: String, description: String!, price: String!): Product!
+        createProduct(name: String, description: String!, price: String!, sizes: [String!]!, images: [String!]!): Product!
         deleteProduct(name: String, description: String!, price: String!): String!
         createEvent: Event!
     }

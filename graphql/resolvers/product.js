@@ -9,10 +9,16 @@ module.exports = {
 
             // return product array
             return products
+        },
+        async fetchProduct(_,{id}){
+            // see if credit card already exists
+            const existingProduct = await Product.findOne({_id: id})
+
+            return existingProduct
         }
     },
     Mutation: {
-        async createProduct(_,{name, description, price}){
+        async createProduct(_,{name, description, price, images, sizes}){
 
             // see if credit card already exists
             const existingProduct = await Product.findOne({name, description, price})
@@ -25,7 +31,7 @@ module.exports = {
 
             // create new credit card object
             let newProduct = new Product({
-                name, description, price
+                name, description, price, images, sizes
             })
 
             // save new credit card
