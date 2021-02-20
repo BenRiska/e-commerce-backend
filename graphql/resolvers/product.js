@@ -1,14 +1,17 @@
 const {UserInputError} = require("apollo-server")
 const Product = require("../../models/Product")
+const ProductCategory = require("../../models/ProductCategory")
 
 module.exports = {
     Query: {
         async fetchProducts(){
-            // get product
-            const products = await Product.find()
+
+                // get product
+            let products = await Product.find()
 
             // return product array
             return products
+
         },
         async fetchProduct(_,{id}){
             // see if credit card already exists
@@ -69,6 +72,38 @@ module.exports = {
 
            // return credit Cards array
            return "Product deleted."
+        },
+        async addCategory(_, {productId, categoryId}){
+
+            // see if credit card already exists
+            const existingProduct = await Product.findOne({_id: productId})
+
+            // see if credit card already exists
+            const existingCategory = await ProductCategory.findOne({_id: categoryId})
+
+            if(existingProduct.categories.includes(categoryId)){
+                throw new UserInputError("Category already listed.")
+            }
+
+            // update tournament
+            let product = await Product.findOneAndUpdate({_id: productId}, {
+                categories: [...existingProduct.categories, existingCategory]
+            },
+            { new: true },
+            (err) => {
+                if(err){
+                    throw new UserInputError("Problem connecting with database.")
+                }
+            });
+
+            return product
+        },
+        async filterByCategory(_,{categoryId}){
+                // get product
+                let products = await Product.find({categories: categoryId})
+
+                // return product array
+                return products
         }
     }
 }

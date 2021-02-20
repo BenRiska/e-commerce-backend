@@ -30,7 +30,7 @@ module.exports = gql`
         price: String!
         sizes: [String!]!
         images: [String!]!
-        categories: [Category!]!
+        categories: [ID!]!
     }
     type Event {
         status: String!
@@ -67,5 +67,7 @@ module.exports = gql`
         createProduct(name: String, description: String!, price: String!, sizes: [String!]!, images: [String!]!): Product!
         deleteProduct(name: String, description: String!, price: String!): String!
         createEvent: Event!
+        addCategory(productId: String!, categoryId: String!): Product!
+        filterByCategory(categoryId: ID!): [Product!]!
     }
 `
