@@ -13,17 +13,20 @@ module.exports = {
     Query: {
     },
     Mutation: {
-        async register(_, {registerInput: {username, password, email, confirmPassword}}){
-           // validate input
-           const {valid,errors} = validateRegisterInput(username, email, password, confirmPassword)
+        async register(_, {email, password}){
 
+            console.log(email, password)
+    
+           // validate input
+           const {valid,errors} = validateRegisterInput(email, password)
+           console.log("hit")
            // throw error if wrong input
            if(!valid){
                throw new UserInputError('Errors', {errors})
            }
 
            // check if user is already created
-           const user = await User.findOne({username})
+           const user = await User.findOne({email})
 
            // throw error if user is found
            if(user){
@@ -41,7 +44,6 @@ module.exports = {
            const newUser = new User({
                email,
                password,
-               username,
                createdAt: new Date().toISOString()
            })
 
@@ -58,9 +60,10 @@ module.exports = {
                token
            }
         },
-        async login(_, {username, password}){
+        async login(_, {email, password}){
+
             // validate input
-            const {errors, valid} = validateLoginInput(username, password)
+            const {errors, valid} = validateLoginInput(email, password)
 
             // throw error if input is invalid
             if(!valid){
@@ -68,7 +71,7 @@ module.exports = {
             }
 
             // check if user is already created
-            const user = await User.findOne({username})
+            const user = await User.findOne({email})
 
             // throw error if no user
             if(!user){

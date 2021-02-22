@@ -56,8 +56,8 @@ module.exports = gql`
         fetchProduct(id: String!): Product!
     }
     type Mutation {
-        register(registerInput: RegisterInput!): User!
-        login(username: String!, password: String!): User!
+        register(email: String!, password: String!): User!
+        login(email: String!, password: String!): User!
         registerCreditCard(cardInput: CardInput!): CreditCard!
         deleteCreditCard(cardInput: CardInput!): [CreditCard!]!
         createContact(username: String!): Contact!
