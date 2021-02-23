@@ -9,6 +9,14 @@ module.exports = gql`
         password: String!
         token: String
     }
+    type Order {
+        totalAmount: String!    
+        paypalId: String!
+        items: [Product!]!
+        payment: ID!
+        Shipping: String!
+        id: ID!
+    }
     type CreditCard {
         id: ID!,
         cc_name: String!
@@ -48,6 +56,27 @@ module.exports = gql`
         confirmPassword: String!
         email: String!
     }
+    input CartItem {
+        id: ID!
+        name: String
+        description: String
+        sizes: [String!]
+        images: [String!]
+        price: String
+        size: String!
+        quantity: Int!
+    }
+    input CreditCardInput {
+        name: String!
+        number: String!
+        exp: String!
+    }
+    input cartInput{
+        cartItems: [CartItem!]!
+        payment: CreditCardInput
+        paypalId: String
+        shippingTier: String
+    }
     type Query {
         fetchCreditCards(username: String!): [CreditCard!]!
         fetchContact(username: String!): Contact!
@@ -69,5 +98,6 @@ module.exports = gql`
         createEvent: Event!
         addCategory(productId: String!, categoryId: String!): Product!
         filterByCategory(categoryId: ID!): [Product!]!
+        createOrder(cartInput: cartInput): Order!
     }
 `

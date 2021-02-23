@@ -4,6 +4,7 @@ const contactResolvers = require("./contact")
 const productCategoryResolvers = require("./productCategory")
 const productResolvers = require("./product")
 const eventResolvers = require("./event")
+const orderResolvers = require("./order")
 
 module.exports = {
     Query: {
@@ -18,6 +19,7 @@ module.exports = {
         ...contactResolvers.Mutation,
         ...productCategoryResolvers.Mutation,
         ...productResolvers.Mutation,
-        ...eventResolvers.Mutation
+        ...eventResolvers.Mutation,
+        ...orderResolvers.Mutation
     }
 }
