@@ -5,6 +5,7 @@ const productCategoryResolvers = require("./productCategory")
 const productResolvers = require("./product")
 const eventResolvers = require("./event")
 const orderResolvers = require("./order")
+const cartResolvers = require("./cart")
 
 module.exports = {
     Query: {
@@ -20,6 +21,7 @@ module.exports = {
         ...productCategoryResolvers.Mutation,
         ...productResolvers.Mutation,
         ...eventResolvers.Mutation,
-        ...orderResolvers.Mutation
+        ...orderResolvers.Mutation,
+        ...cartResolvers.Mutation
     }
 }

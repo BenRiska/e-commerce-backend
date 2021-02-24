@@ -40,6 +40,21 @@ module.exports = gql`
         images: [String!]!
         categories: [ID!]!
     }
+    type Cart {
+        products: [CartProduct!]!
+        id: ID!
+    }
+    type CartProduct {
+        id: ID!
+        name: String!
+        description: String!
+        price: String!
+        sizes: [String!]!
+        images: [String!]!
+        categories: [ID!]!
+        size: String!
+        quantity: Int!
+    }
     type Event {
         status: String!
         deliveryDate: String!
@@ -99,5 +114,6 @@ module.exports = gql`
         addCategory(productId: String!, categoryId: String!): Product!
         filterByCategory(categoryId: ID!): [Product!]!
         createOrder(cartInput: cartInput): Order!
+        addProduct(cartId: String!, productId: String!, size: String!, quantity: Int!): Cart!
     }
 `

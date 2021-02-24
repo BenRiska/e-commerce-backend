@@ -1,5 +1,4 @@
 const {UserInputError} = require("apollo-server");
-const { createSourceEventStream } = require("graphql");
 const Event = require("../../models/Event")
 const User = require("../../models/User")
 const checkAuth = require('../../utils/check-auth');
