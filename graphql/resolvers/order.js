@@ -1,59 +1,60 @@
 const {UserInputError} = require("apollo-server")
 const Order = require("../../models/Order")
 const Product = require("../../models/Product")
+const Cart = require("../../models/Cart")
+const CartProduct = require("../../models/CartProduct")
 const checkAuth = require('../../utils/check-auth');
 
 module.exports = {
     Mutation: {
-        async createOrder(_,{cartInput: {cartItems, payment, paypalId, shippingTier}}, context){
-            //  // check user is authorized
-            //  const user = checkAuth(context);
+        async createOrder(_,{cartId}, context){
 
-             let orderItems = cartItems.map(item => ({id: item.id, quantity: item.quantity, size: item.size}))
+            // see if tournament already exists
+            let cart = await Cart.findOne({_id: cartId})
 
-             if(paypalId){
+            let user = null
 
-                // see if tournament already exists
-                const existingOrder = await Order.findOne({paypalId})
+            if(context.req.headers.authorization){
+                // check user is authorized
+                 user = checkAuth(context);
+            }
 
-                // check and throw error
-                if(existingOrder){
-                throw new UserInputError(
-                    "Paypal Error.")
-                }
+            let order;
 
-                // create new tournament object
-                 let newOrder = new Order({
-                    paypalId,
-                    items: orderItems
-                 })
+            if(user){
+                order = new Order({
+                    user: user.id,
+                    shipping: "FREE",
+                    paypalId: (Math.random() * 1000).toString(),
+                    cart: cart.id,
+                    createdAt: new Date().toISOString()
+                })
+            } else{
+                order = new Order({
+                    shipping: "FREE",
+                    paypalId: (Math.random() * 1000).toString(),
+                    cart: cart.id,
+                    createdAt: new Date().toISOString()
+                })
+            }
 
-                 // save new tournament
-                    let order = await newOrder.save()
+            order = await order.save()
 
-                // get new order
-                    order = await Order.findOne({paypalId})
+            console.log(order)
 
-                // return order
-                    return {id: order.id, paypalId: order.paypalId, items: cartItems}
-                }
+            let cartProducts = await CartProduct.find({cart: cart.id})
+            
+            let productList = await Product.find({_id: {$in: cartProducts.map(product => product.product)}})
 
-                // if(payment){
-                //     // create new tournament object
-                //      let newOrder = new Order({
-                //         payment,
-                //         items: orderItems
-                //      })
-    
-                //      // save new tournament
-                //         let order = await newOrder.save()
-    
-                //     // get new order
-                //         order = await Order.findOne({paypalId})
-    
-                //     // return order
-                //         return {...order, items: cartItems}
-                //     }
+            cartProducts = cartProducts.map(product => {
+                let mappedProduct = productList.filter(p => p._id !== product.product)[0]
+                return {...mappedProduct._doc, size: product.size, quantity: product.quantity, id: mappedProduct._doc._id}
+            })
+
+            console.log(cartProducts)
+
+            return {...order._doc, products: cartProducts, id: order._doc._id}
+
 
         }
     }

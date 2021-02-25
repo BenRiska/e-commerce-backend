@@ -21,7 +21,7 @@ module.exports = {
 
             if(context.req.headers.authorization){
                 // check user is authorized
-                const user = checkAuth(context);
+                 user = checkAuth(context);
             }
 
             let cart
@@ -44,17 +44,63 @@ module.exports = {
                 cart = await Cart.findOne({_id: cartId})
             }
 
-            let cartProduct = new CartProduct({
-                cart: cart.id,
-                product: productId,
-                quantity,
-                size
-            })
+            let existingCartProduct = await CartProduct.findOne({cart: cart.id, product: productId, size})
 
-            // save new Cart product
-            cartProduct = await cartProduct.save()
+            let cartProduct;
+
+            if(existingCartProduct){
+
+                cartProduct = await CartProduct.findOneAndUpdate({cart: cart.id, product: productId, size}, {
+                    quantity: existingCartProduct.quantity + 1
+                })
+
+            } else{
+
+                cartProduct = new CartProduct({
+                    cart: cart.id,
+                    product: productId,
+                    quantity,
+                    size
+                })
+    
+                // save new Cart product
+                cartProduct = await cartProduct.save()
+
+            }
 
             let cartProducts = await CartProduct.find({cart: cart.id})
+            
+            let productList = await Product.find({_id: {$in: cartProducts.map(product => product.product)}})
+
+            cartProducts = cartProducts.map(product => {
+                let mappedProduct = productList.filter(p => p._id !== product.product)[0]
+                return {...mappedProduct._doc, size: product.size, quantity: product.quantity, id: mappedProduct._doc._id}
+            })
+
+            return {id: cart.id, products: cartProducts}
+
+        },
+        async deleteCartProduct(_,{cartId, productId}){
+
+            // find cart product
+            let cartProduct = await CartProduct.find({cart: cartId, product: productId})
+
+            if(!cartProduct){
+                throw new UserInputError(
+                    "Product doesn't exist.")
+            }
+
+            // delete cart product
+
+            CartProduct.deleteOne({cart: cartId, product: productId}, (err) => {
+                if(err){
+                    console.log(err)
+                }
+            })
+
+            // create new cart
+
+            let cartProducts = await CartProduct.find({cart: cartId})
             
             let productList = await Product.find({_id: {$in: cartProducts.map(product => product.product)}})
 
@@ -65,7 +111,7 @@ module.exports = {
                 return mappedProduct
             })
 
-            return {id: cart.id, products: cartProducts}
+            return {id: cartId, products: cartProducts}
 
         }
     }
