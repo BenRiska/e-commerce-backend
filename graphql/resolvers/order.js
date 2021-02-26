@@ -9,6 +9,8 @@ module.exports = {
     Mutation: {
         async createOrder(_,{cartId}, context){
 
+            console.log("hit")
+
             // see if tournament already exists
             let cart = await Cart.findOne({_id: cartId})
 

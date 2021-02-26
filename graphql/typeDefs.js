@@ -11,8 +11,8 @@ module.exports = gql`
     }
     type Order {    
         paypalId: String!
-        products: [Product!]!
-        Shipping: String!
+        products: [CartProduct!]!
+        shipping: String!
         id: ID!
         createdAt: String!
         cart: ID!
